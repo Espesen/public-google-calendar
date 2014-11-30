@@ -1,0 +1,34 @@
+{
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jasmine-node-new": "^0.3.2",
+    "load-grunt-tasks": "^1.0.0"
+  },
+  "name": "public-google-calendar",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Espesen/public-google-calendar.git",
+  "homepage": "https://gitgub.com/Espesen/public-google-calendar",
+  "description": "Fetch events from a public Google Calendar and return them in simplified JSON format",
+  "main": "public-google-calendar.js",
+  "dependencies": {
+    "ical": "^0.3.1"
+  },
+  "scripts": {
+    "test": "grunt jasmine_node"
+  },
+  "keywords": [
+    "public",
+    "google",
+    "calendar",
+    "json"
+  ],
+  "author": "Esa Toivola",
+  "license": "MIT"
+}
