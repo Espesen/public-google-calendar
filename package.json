@@ -13,7 +13,8 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Espesen/public-google-calendar.git",
+    "url": "git://github.com/Espesen/public-google-calendar.git"
+  },
   "homepage": "https://gitgub.com/Espesen/public-google-calendar",
   "description": "Fetch events from a public Google Calendar and return them in simplified JSON format",
   "main": "public-google-calendar.js",
