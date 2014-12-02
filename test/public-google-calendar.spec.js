@@ -24,7 +24,7 @@ describe('public-google-calendar.js', function () {
       };
 
       cal.getEvents(callback);
-    });
+    }, 30000);
 
     var sortingTestCallback = function(ascending, done) {
       return function (err, events) {
@@ -46,11 +46,11 @@ describe('public-google-calendar.js', function () {
 
     it('should return date-sorted data, by default latest event first', function(done) {
       cal.getEvents(sortingTestCallback(false, done));
-    });
+    }, 30000);
 
     it('should return date-sorted data, earliest event first if required', function(done) {
       cal.getEvents({ earliestFirst: true }, sortingTestCallback(true, done));
-    });
+    }, 30000);
 
   });
 });

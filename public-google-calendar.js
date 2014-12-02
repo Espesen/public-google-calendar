@@ -19,7 +19,13 @@ module.exports = function PublicGoogleCalendar(args) {
     }
 
     var events = []
-      , properties = ['start', 'end', 'status', 'summary', 'description', 'location'] // properties to include in result
+      , properties = [                         // properties to include in result
+          { name: 'start', type: 'object' },
+          { name: 'end', type: 'object' },
+          { name: 'status', type: 'string' },
+          { name: 'summary', type: 'string' },
+          { name: 'description', type: 'string' },
+          { name: 'location', type: 'string' } ]
       , obj;
 
     // define sorting order ascending/descending
@@ -30,12 +36,17 @@ module.exports = function PublicGoogleCalendar(args) {
 
       ical.fromURL(url, {}, function(err, data) {
 
+        var k;
+
         var iterator = function(prop) {
-          obj[prop] = data[k][prop];
+          obj[prop.name] = data[k][prop.name];
+          if (prop.type === 'string') {
+            obj[prop.name] = typeof obj[prop.name] === 'string' ? obj[prop.name] : '';
+          }
         };
 
         if (err) { return callback(err); }
-        for (var k in data) {
+        for (k in data) {
           if (data.hasOwnProperty(k) && data[k].type === 'VEVENT') {
             obj = {};
             properties.forEach(iterator);
