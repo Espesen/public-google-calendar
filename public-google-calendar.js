@@ -83,7 +83,7 @@ module.exports = function PublicGoogleCalendar(args) {
               }
               newObject.start = new Date(dateString);
               if (eventLength) {
-                newObject.end = new Date(newObject.start + eventLength);
+                newObject.end = new Date(newObject.start.getTime() + eventLength);
               }
               expandedEvents.push(newObject);
             });
