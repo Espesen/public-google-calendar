@@ -97,5 +97,27 @@ describe('public-google-calendar.js', function () {
       });
     });
 
+    describe('expanded events', function () {
+      it('should contain reference to the base event of the series', function (done) {
+
+        var eventSummary = repeatingEvents[0].name
+          , series = [];
+
+        cal.getEvents({ earliestFirst: true }, function (err, data) {
+          if (err) { return done(err); }
+          data.forEach(function (item) {
+            if (item.summary === eventSummary) { series.push(item); }
+          });
+
+          expect(series.length).toBe(repeatingEvents[0].count);
+
+          series.slice(1).forEach(function (item) {
+            expect(item.baseEvent.start).toBe(series[0].start);
+          });
+          done(null);
+        });
+      });
+    });
+
   });
 });

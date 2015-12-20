@@ -27,7 +27,10 @@ publicGoogleCalendar.getEvents(function(err, events) {
 
 By default, returns a date-sorted array (latest event first) of Google Calendar events.
 
-Options (optional): set `earliestFirst` true to reverse sort order.
+Options (optional):
+  `earliestFirst`: reverse sort order (default: false)
+  `expandRecurring`: expand recurring events (default: true)
+
 Callback: called with arguments `error` and `events`, an array of objects with following properties:
   `summary`: string
   `location`: string
@@ -35,7 +38,8 @@ Callback: called with arguments `error` and `events`, an array of objects with f
   `description`: string
   `start`: Date object
   `end`: Date object
-  `id`: string
+  `id`: string (event id)
+  `baseEvent`: if event is part of a series of expanded events, this points to the base event of the series
 
 #####Testing:
 
