@@ -10,7 +10,7 @@
     "load-grunt-tasks": "^1.0.0"
   },
   "name": "public-google-calendar",
-  "version": "0.0.2",
+  "version": "0.1.0-beta",
   "repository": {
     "type": "git",
     "url": "git://github.com/Espesen/public-google-calendar.git"
@@ -19,7 +19,8 @@
   "description": "Fetch events from a public Google Calendar and return them in simplified JSON format",
   "main": "public-google-calendar.js",
   "dependencies": {
-    "ical": "^0.3.1"
+    "ical": "^0.4.0",
+    "rrule": "^2.1.0"
   },
   "scripts": {
     "test": "grunt jasmine_node"

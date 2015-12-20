@@ -1,4 +1,5 @@
-var ical = require('ical');
+var ical = require('ical')
+  , RRule = require('rrule').RRule;
 
 module.exports = function PublicGoogleCalendar(args) {
 
@@ -19,12 +20,14 @@ module.exports = function PublicGoogleCalendar(args) {
     }
 
     var events = []
+      , expandedEvents = []
       , properties = [                         // properties to include in result
           { name: 'start', type: 'object' },
           { name: 'end', type: 'object' },
           { name: 'status', type: 'string' },
           { name: 'summary', type: 'string' },
           { name: 'description', type: 'string' },
+          { name: 'rrule', type: 'object' },
           { name: 'location', type: 'string' } ]
       , obj;
 
@@ -54,6 +57,42 @@ module.exports = function PublicGoogleCalendar(args) {
           }
         }
 
+        // expand recurring events
+        events.forEach(function(event) {
+
+          var rule, eventLength;
+          if (event.rrule) {
+
+            // Ugly hack, because latest version of 'ical' is not yet in npm
+            event.rrule.origOptions.dtstart = event.start;
+
+            rule = new RRule(event.rrule.origOptions);
+
+            eventLength = event.end ? event.end - event.start : 0;
+            rule.all().slice(1).forEach(function (dateString) {
+
+              var newObject = {}
+                , k;
+
+
+              // TODO: Should make this property copying future proof
+              for (k in event) {
+                if (event.hasOwnProperty(k) && typeof event[k] === 'string') {
+                  newObject[k] = event[k];
+                }
+              }
+              newObject.start = new Date(dateString);
+              if (eventLength) {
+                newObject.end = new Date(newObject.start + eventLength);
+              }
+              expandedEvents.push(newObject);
+            });
+          }
+        });
+        events = events.concat(expandedEvents);
+
+
+        // sort events
         events.sort(function(a, b) {
             if (a.start > b.start) {
               return -1 * sortingModifier;

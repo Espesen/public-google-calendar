@@ -15,7 +15,7 @@ npm install public-google-calendar
 var PublicGoogleCalendar = require('public-google-calendar')
   , publicGoogleCalendar = new PublicGoogleCalendar({ calendarId: 'id-of-public-google-calendar' });
   
-publicGoogleCalendar.getJSON(function(err, events) {
+publicGoogleCalendar.getEvents(function(err, events) {
   if (err) { return console.log(err.message); }
   // events is now array of all calendar events
 });

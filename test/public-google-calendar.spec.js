@@ -1,9 +1,16 @@
 
 
 // a sample calendar for testing
-var calendarId = '8q48qdcs88hl59kei3oaq5kqq4@group.calendar.google.com';
+var calendarId = '199slga5i4eh632182h41sr98g@group.calendar.google.com';
+
+// data in sample calendar
+var repeatingEvents = [
+  { name: 'Repeating event 1', count: 10, found: [] },
+  { name: 'Repeating event 2', count: 5, found: [] }
+];
 
 var PublicGoogleCalendar = require('../public-google-calendar')
+  //, RRule = require('rrule').RRule
   , cal = new PublicGoogleCalendar({ calendarId: calendarId });
 
 describe('public-google-calendar.js', function () {
@@ -51,6 +58,24 @@ describe('public-google-calendar.js', function () {
     it('should return date-sorted data, earliest event first if required', function(done) {
       cal.getEvents({ earliestFirst: true }, sortingTestCallback(true, done));
     }, 30000);
+
+    it('should expand recurring events', function (done) {
+      cal.getEvents(function(err, data) {
+        if (err) { return done(err); }
+
+        data.forEach(function(item) {
+          repeatingEvents.forEach(function(event) {
+            if (item.summary === event.name) { event.found.push(item); }
+          });
+        });
+
+        repeatingEvents.forEach(function(event) {
+          expect(event.count).toBe(event.found.length);
+        });
+
+        done(null);
+      });
+    });
 
   });
 });
