@@ -29,7 +29,16 @@ module.exports = function PublicGoogleCalendar(args) {
           { name: 'description', type: 'string' },
           { name: 'rrule', type: 'object' },
           { name: 'location', type: 'string' } ]
+      , defaults = { expandRecurring: true, earliestFirst: false }
+      , k
       , obj;
+
+    // set default options
+    for (k in defaults) {
+      if (defaults.hasOwnProperty(k) && !(k in options)) {
+        options[k] = defaults[k];
+      }
+    }
 
     // define sorting order ascending/descending
     var sortingModifier = options.earliestFirst ? -1 : 1;
@@ -58,38 +67,39 @@ module.exports = function PublicGoogleCalendar(args) {
         }
 
         // expand recurring events
-        events.forEach(function(event) {
+        if (options.expandRecurring) {
+          events.forEach(function (event) {
 
-          var rule, eventLength;
-          if (event.rrule) {
+            var rule, eventLength;
+            if (event.rrule) {
 
-            // Ugly hack, because latest version of 'ical' is not yet in npm
-            event.rrule.origOptions.dtstart = event.start;
+              // Ugly hack, because latest version of 'ical' is not yet in npm
+              event.rrule.origOptions.dtstart = event.start;
 
-            rule = new RRule(event.rrule.origOptions);
+              rule = new RRule(event.rrule.origOptions);
 
-            eventLength = event.end ? event.end - event.start : 0;
-            rule.all().slice(1).forEach(function (dateString) {
+              eventLength = event.end ? event.end - event.start : 0;
+              rule.all().slice(1).forEach(function (dateString) {
 
-              var newObject = {}
-                , k;
+                var newObject = {}
+                  , k;
 
-
-              // TODO: Should make this property copying future proof
-              for (k in event) {
-                if (event.hasOwnProperty(k) && typeof event[k] === 'string') {
-                  newObject[k] = event[k];
+                // TODO: Should make this property copying future proof
+                for (k in event) {
+                  if (event.hasOwnProperty(k) && typeof event[k] === 'string') {
+                    newObject[k] = event[k];
+                  }
                 }
-              }
-              newObject.start = new Date(dateString);
-              if (eventLength) {
-                newObject.end = new Date(newObject.start.getTime() + eventLength);
-              }
-              expandedEvents.push(newObject);
-            });
-          }
-        });
-        events = events.concat(expandedEvents);
+                newObject.start = new Date(dateString);
+                if (eventLength) {
+                  newObject.end = new Date(newObject.start.getTime() + eventLength);
+                }
+                expandedEvents.push(newObject);
+              });
+            }
+          });
+          events = events.concat(expandedEvents);
+        }
 
 
         // sort events

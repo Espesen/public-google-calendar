@@ -5,8 +5,8 @@ var calendarId = '199slga5i4eh632182h41sr98g@group.calendar.google.com';
 
 // data in sample calendar
 var repeatingEvents = [
-  { name: 'Repeating event 1', count: 10, found: [] },
-  { name: 'Repeating event 2', count: 5, found: [] }
+  { name: 'Repeating event 1', count: 10 },
+  { name: 'Repeating event 2', count: 5 }
 ];
 
 var PublicGoogleCalendar = require('../public-google-calendar')
@@ -15,7 +15,7 @@ var PublicGoogleCalendar = require('../public-google-calendar')
 
 describe('public-google-calendar.js', function () {
 
-  describe('method getJSON', function () {
+  describe('method getEvents', function () {
 
     it('should get calendar data and convert it to JSON', function (done) {
 
@@ -59,9 +59,11 @@ describe('public-google-calendar.js', function () {
       cal.getEvents({ earliestFirst: true }, sortingTestCallback(true, done));
     }, 30000);
 
-    it('should expand recurring events', function (done) {
+    it('should by default expand recurring events', function (done) {
       cal.getEvents(function(err, data) {
         if (err) { return done(err); }
+
+        repeatingEvents.forEach(function(event) { event.found = []; });
 
         data.forEach(function(item) {
           repeatingEvents.forEach(function(event) {
@@ -72,7 +74,25 @@ describe('public-google-calendar.js', function () {
         repeatingEvents.forEach(function(event) {
           expect(event.count).toBe(event.found.length);
         });
+        done(null);
+      });
+    });
 
+    it('should not expand recurring events when "expandRecurring" is set to false', function (done) {
+      cal.getEvents({ expandRecurring: false }, function(err, data) {
+        if (err) { return done(err); }
+
+        repeatingEvents.forEach(function(event) { event.found = []; });
+
+        data.forEach(function (item) {
+          repeatingEvents.forEach(function (event) {
+            if (item.summary === event.name ) { event.found.push(item); }
+          });
+        });
+
+        repeatingEvents.forEach(function (event) {
+          expect(event.found.length).toBe(1);
+        });
         done(null);
       });
     });
