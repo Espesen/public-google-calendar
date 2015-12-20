@@ -35,6 +35,7 @@ Callback: called with arguments `error` and `events`, an array of objects with f
   `description`: string
   `start`: Date object
   `end`: Date object
+  `id`: string
 
 #####Testing:
 

@@ -24,7 +24,7 @@ describe('public-google-calendar.js', function () {
         if (err) { return done(err); }
         expect(events.length).toBeTruthy();
         events.forEach(function(event) {
-          ['start', 'end', 'status', 'summary', 'description', 'location']
+          ['start', 'end', 'status', 'summary', 'description', 'location', 'id']
             .forEach(function(prop) { expect(prop in event).toBeTruthy(); });
         });
         done();

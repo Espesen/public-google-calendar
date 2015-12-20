@@ -28,7 +28,8 @@ module.exports = function PublicGoogleCalendar(args) {
           { name: 'summary', type: 'string' },
           { name: 'description', type: 'string' },
           { name: 'rrule', type: 'object' },
-          { name: 'location', type: 'string' } ]
+          { name: 'location', type: 'string' },
+          { name: 'uid', newName: 'id', type: 'string'} ]
       , defaults = { expandRecurring: true, earliestFirst: false }
       , k
       , obj;
@@ -51,15 +52,17 @@ module.exports = function PublicGoogleCalendar(args) {
         var k;
 
         var iterator = function(prop) {
-          obj[prop.name] = data[k][prop.name];
+          var key = prop.newName ? prop.newName : prop.name;
+          obj[key] = data[k][prop.name];
           if (prop.type === 'string') {
-            obj[prop.name] = typeof obj[prop.name] === 'string' ? obj[prop.name] : '';
+            obj[key] = typeof obj[key] === 'string' ? obj[key] : '';
           }
         };
 
         if (err) { return callback(err); }
         for (k in data) {
           if (data.hasOwnProperty(k) && data[k].type === 'VEVENT') {
+
             obj = {};
             properties.forEach(iterator);
             events.push(obj);
@@ -100,7 +103,6 @@ module.exports = function PublicGoogleCalendar(args) {
           });
           events = events.concat(expandedEvents);
         }
-
 
         // sort events
         events.sort(function(a, b) {
