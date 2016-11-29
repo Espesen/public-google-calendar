@@ -30,6 +30,7 @@ By default, returns a date-sorted array (latest event first) of Google Calendar 
 Options (optional):
   `earliestFirst`: reverse sort order (default: false)
   `expandRecurring`: expand recurring events (default: true)
+  'endDate': (number, milliseconds since epoch) return only events before this moment (default: three years from now)
 
 Callback: called with arguments `error` and `events`, an array of objects with following properties:
   `summary`: string

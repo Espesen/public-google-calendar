@@ -40,10 +40,10 @@ describe('public-google-calendar.js', function () {
         events.forEach(function(event, index) {
           if (index > 0) {
             if (ascending) {
-              expect(event.start).toBeGreaterThan(events[index - 1].start);
+              expect(event.start).not.toBeLessThan(events[index - 1].start);
             }
             else {
-              expect(event.start).toBeLessThan(events[index - 1].start);
+              expect(event.start).not.toBeGreaterThan(events[index - 1].start);
             }
           }
         });
@@ -57,6 +57,35 @@ describe('public-google-calendar.js', function () {
 
     it('should return date-sorted data, earliest event first if required', function(done) {
       cal.getEvents({ earliestFirst: true }, sortingTestCallback(true, done));
+    }, 30000);
+
+    it('should by default omit events more than three years in the future', function(done) {
+
+      var date = new Date();
+      date.setYear(date.getFullYear() + 3);
+      endDate = date.getTime();
+
+      cal.getEvents(function (err, data) {
+        if (err) { return done(err); }
+        data.forEach(function (event) {
+          expect(event.start.getTime()).toBeLessThan(endDate);
+        });
+        done();
+      });
+    }, 30000);
+
+    it('should accept option "endDate"', function (done) {
+      var date = new Date();
+      date.setYear(date.getFullYear() + 1);
+      endDate = date.getTime();
+
+      cal.getEvents({ endDate: endDate }, function (err, data) {
+        if (err) { return done(err); }
+        data.forEach(function (event) {
+          expect(event.start.getTime()).toBeLessThan(endDate);
+        });
+        done();
+      });
     }, 30000);
 
     it('should by default expand recurring events', function (done) {

@@ -31,6 +31,7 @@ module.exports = function PublicGoogleCalendar(args) {
           { name: 'location', type: 'string' },
           { name: 'uid', newName: 'id', type: 'string'} ]
       , defaults = { expandRecurring: true, earliestFirst: false }
+      , endDate
       , k
       , obj;
 
@@ -39,6 +40,18 @@ module.exports = function PublicGoogleCalendar(args) {
       if (defaults.hasOwnProperty(k) && !(k in options)) {
         options[k] = defaults[k];
       }
+    }
+
+    if ("endDate" in options) {
+      if (typeof options.endDate !== 'number') {
+        return callback(new Error('Invalid options: endDate must be a number (UNIX timestamp)'));
+      }
+      endDate = options.endDate;
+    }
+    else {
+      var date = new Date();
+      date.setYear(date.getFullYear() + 3);
+      endDate = date.getTime();
     }
 
     // define sorting order ascending/descending
@@ -82,7 +95,8 @@ module.exports = function PublicGoogleCalendar(args) {
               rule = new RRule(event.rrule.origOptions);
 
               eventLength = event.end ? event.end - event.start : 0;
-              rule.all().slice(1).forEach(function (dateString) {
+
+              rule.between(new Date(0), new Date(endDate)).slice(1).forEach(function (dateString) {
 
                 var newObject = {}
                   , k;
@@ -104,6 +118,11 @@ module.exports = function PublicGoogleCalendar(args) {
           });
           events = events.concat(expandedEvents);
         }
+
+        // filter out events past endDate
+        events = events.filter(function (event) {
+          return event.start.getTime() < endDate;
+        });
 
         // sort events
         events.sort(function(a, b) {

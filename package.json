@@ -10,7 +10,7 @@
     "load-grunt-tasks": "^1.0.0"
   },
   "name": "public-google-calendar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/Espesen/public-google-calendar.git"
@@ -23,7 +23,8 @@
     "rrule": "^2.1.0"
   },
   "scripts": {
-    "test": "grunt jasmine_node"
+    "test": "grunt jasmine_node",
+    "autotest": "grunt watch"
   },
   "keywords": [
     "public",
